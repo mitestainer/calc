@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Mitestainer's Calculator</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+        crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Mukta" rel="stylesheet">
+</head>
+<style>
+    * {
+        /* outline: 1px solid; */
+        margin: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        height: 100vh;
+        width: 100vw;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-family: 'Mukta', sans-serif;
+    }
+
+    .device {
+        display: grid;
+        grid-template-rows: 3fr 5fr;
+        height: 600px;
+        width: 350px;
+        padding: 0.1em;
+        border: 3px solid;
+    }
+
+    #display {
+        display: flex;
+        justify-content: space-between;
+        flex-direction: column;
+        align-items: flex-end;
+        background-color: #e8e8e8;
+        padding: 0.5em 1em;
+    }
+
+    .settings {
+        display: inherit;
+        justify-content: space-between;
+        align-items: center;
+        width: unset;
+    }
+    input[type='checkbox'] {
+        display: none;
+    }
+    #settings i {
+        font-size: 1.5em;
+        vertical-align: middle;
+        pointer-events: none;
+    }
+    #cog {
+        cursor: pointer;
+    }
+    .cog {
+        color: #b5b5b5;
+    }
+    #cog:hover, .cog-selected {
+        color: #8d8d8d;
+    }
+    .setting {
+        width: 1.5em;
+        height: 1.5em;
+        border-radius: 100%;
+        border: 2.5px solid #bababa;
+        cursor: pointer;
+        display: none;
+    }
+    .open {
+        width: 100%;
+    }
+    .on {
+        display: inline;
+    }
+    #default-setting {
+        background: linear-gradient(135deg, blue 0%, blue 50%, orange 50%, orange 100%);
+    }
+    #setting-1 {
+        background: linear-gradient(135deg, green 0%, green 50%, lightgreen 50%, lightgreen 100%);
+    }
+    #setting-2 {
+        background: linear-gradient(135deg, violet 0%, violet 50%, pink 50%, pink 100%);
+    }
+    #setting-3 {
+        background: linear-gradient(135deg, black 0%, black 50%, gray 50%, gray 100%);
+    }
+
+    #preview {
+        font-size: 1.25em;
+        height: 2em;
+    }
+    #result {
+        font-size: 2.5em;
+        height: 2em;
+    }
+
+    #keypad {
+        display: inherit;
+        grid-template-columns: repeat(4, 1fr);
+        grid-template-rows: repeat(5, 1fr);
+        grid-gap: 0.1em;
+    }
+
+    .buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        -moz-user-select: none;
+        -webkit-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        cursor: pointer;
+        font-size: 1.5em;
+    }
+    .buttons i {
+        pointer-events: none;
+    }
+    .special1 {
+        background-color: orange;
+    }
+    .special2 {
+        background-color: blue;
+    }
+    .operator {
+        background-color: #c8c8c8;
+    }
+    .operator:hover {
+        background-color: #9a9a9a;
+    }
+    .number {
+        background-color: #f0f0f0;
+    }
+    .number:hover, .number-active {
+        background-color: #b8b8b8;
+    }
+
+    #b-15 {
+        grid-row: 4 / span 2;
+        grid-column: 4;
+    }
+
+    #b-16 {
+        grid-column: 1 / span 2;
+    }
+</style>
+
+<body>
+    <div class="device">
+        <div id="display">
+            <div id="settings" class="settings">
+                <div id="default-setting" class="setting"></div>
+                <div id="setting-1" class="setting"></div>
+                <div id="setting-2" class="setting"></div>
+                <div id="setting-3" class="setting"></div>
+                <input type="checkbox" id="settings-check">
+                <label id="cog" for="settings-check" class="cog">
+                    <span><i class="fas fa-cog"></i></span>
+                </label>
+            </div>
+            <p id="preview"></p>
+            <p id="result"></p>
+        </div>
+        <div id="keypad"></div>
+    </div>
+    <script>
+        var baseButtons = ['AC', 'C', '/', '*', 7, 8, 9, '-', 4, 5, 6, '+', 1, 2, 3, '=', 0, '.'];
+        var keypad = document.getElementById('keypad');
+        var resultDisplay = document.getElementById('result');
+        var previewDisplay = document.getElementById('preview');
+
+        // Create buttons
+
+        for (var x = 0; x < baseButtons.length; x++) {
+            var button = document.createElement('div');
+            button.className = 'buttons';
+            button.id = 'b-' + x;
+            button.innerHTML = baseButtons[x];
+            keypad.appendChild(button);
+        }
+        var buttons = document.querySelectorAll('.buttons');
+        for (var x = 0; x < buttons.length; x++) {
+            // if (buttons[x].innerHTML === 'AC') {
+            //     buttons[x].className = 'buttons special1';
+            // } else if (buttons[x].innerHTML === 'C' || buttons[x].innerHTML === '<i class="fas fa-equals"></i>') {
+            //     buttons[x].className = 'buttons special2';
+            // } else if (buttons[x].innerHTML === '/' || buttons[x].innerHTML === '*' || buttons[x].innerHTML === '-' || buttons[x].innerHTML === '+') {
+            //     buttons[x].className = 'buttons operator';
+            // } else {
+            //     buttons[x].className = 'buttons number';
+            // }
+            switch (buttons[x].innerHTML) {
+                case 'AC':
+                    buttons[x].className = 'buttons special1';
+                    break;
+                case 'C':
+                    buttons[x].className = 'buttons special2';
+                    break;
+                case '=':
+                    buttons[x].innerHTML = '<i class="fas fa-equals"></i>'
+                    buttons[x].className = 'buttons special2';
+                    break;
+                case '/':
+                    buttons[x].innerHTML = '<i class="fas fa-divide"></i>';
+                    buttons[x].className = 'buttons operator';
+                    break;
+                case '*':
+                    buttons[x].innerHTML = '<i class="fas fa-times"></i>';
+                    buttons[x].className = 'buttons operator';
+                    break;
+                case '-':
+                    buttons[x].innerHTML = '<i class="fas fa-minus"></i>';
+                    buttons[x].className = 'buttons operator';
+                    break;
+                case '+':
+                    buttons[x].innerHTML = '<i class="fas fa-plus"></i>';
+                    buttons[x].className = 'buttons operator';
+                    break;
+                default:
+                    buttons[x].className = 'buttons number';
+                    break;
+            }
+        }
+
+        // Operations
+        var currentValue;
+
+        function displayNumber(input) {
+            if (resultDisplay.textContent === '') {
+                resultDisplay.textContent = input;
+                currentValue = resultDisplay.textContent;
+                // console.log(currentValue);
+            } else {
+                currentValue = currentValue + input;
+                resultDisplay.textContent = currentValue;
+                // console.log(currentValue);
+            }
+        }
+
+        var previewValue;
+
+        function operation(symbol) {
+            if (currentValue === '') {
+                var splitted = previewValue.split('');
+                var reversed = splitted.reverse();
+                reversed[1] = symbol;
+                splitted = reversed.reverse();
+                var joined = splitted.join('');
+                previewDisplay.textContent = joined;
+                previewValue = previewDisplay.textContent;
+            } else {
+            if (previewDisplay.textContent === '') {
+                previewDisplay.textContent = currentValue + ' ' + symbol + ' ';
+                previewValue = previewDisplay.textContent;
+                currentValue = '';
+                resultDisplay.textContent = '';
+            } else {
+                if (previewValue === '') {
+                    previewValue = resultDisplay.textContent + ' ' + symbol + ' ';
+                } else {
+                    previewValue = previewValue + currentValue + ' ' + symbol + ' ';
+                }
+                previewDisplay.textContent = previewValue;
+                currentValue = '';
+                resultDisplay.textContent = '';
+            }
+            }
+        }
+
+        function total() {
+            var total = previewValue + currentValue;
+            previewDisplay.textContent = total;
+            var finalTotal = eval(total);
+            resultDisplay.textContent = finalTotal;
+            previewValue = '';
+        }
+
+        function clear() {
+            resultDisplay.textContent = '';
+        }
+
+        function clearAll() {
+            previewValue = '';
+            currentValue = '';
+            resultDisplay.textContent = '';
+            previewDisplay.textContent = '';
+        }
+
+        function dot() {
+            currentValue = currentValue + '.';
+            resultDisplay.textContent = currentValue;
+        }
+
+
+        function symbols(input) {
+            switch (input) {
+                case '+':
+                    operation('+');
+                    break;
+                case '-':
+                    operation('-');
+                    ///
+                    break;
+                case '*':
+                    operation('*');
+                    /////
+                    break;
+                case '/':
+                    operation('/');
+                    /////
+                    break;
+                case '=':
+                    ////
+                    total();
+                    break;
+                case 'C':
+                    clear();
+                    break;
+                case 'AC':
+                    clearAll();
+                    break;
+                case '.':
+                    dot();
+                    break;
+            }
+        }
+
+        // Buttons Logic
+        keypad.addEventListener('click', function (e) {
+            // console.log(e.target.id);
+            // for (var x = 0; x < buttons.length; x++) {
+            if (e.target.className === 'buttons number') {
+                displayNumber(e.target.textContent);
+            } else {
+                switch (e.target.innerHTML) {
+                    case '<i class="fas fa-plus"></i>':
+                        symbols('+');
+                        break;
+                    case '<i class="fas fa-minus"></i>':
+                        symbols('-');
+                        break;
+                    case '<i class="fas fa-times"></i>':
+                        symbols('*');
+                        break;
+                    case '<i class="fas fa-divide"></i>':
+                        symbols('/');
+                        break;
+                    case '<i class="fas fa-equals"></i>':
+                        symbols('=');
+                        break;
+                    case 'AC':
+                        symbols('AC');
+                        break;
+                    case 'C':
+                        symbols('C');
+                        break;
+                    case '.':
+                        symbols('.');
+                        break;
+                }
+                // console.log('anythung else');
+                // console.log(baseButtons[x]);
+                // symbols(baseButtons[x]);
+            }
+
+            // }
+        });
+
+        // Physical keyboard
+        window.addEventListener('keydown', function (e) {
+            if (e.which >= 48 & e.which <= 57) {
+                switch (e.which) {
+                    case 48:
+                        displayNumber('0');
+                        break;
+                    case 49:
+                        displayNumber('1');
+                        break;
+                    case 50:
+                        displayNumber('2');
+                        break;
+                    case 51:
+                        displayNumber('3');
+                        break;
+                    case 52:
+                        displayNumber('4');
+                        break;
+                    case 53:
+                        displayNumber('5');
+                        break;
+                    case 54:
+                        displayNumber('6');
+                        break;
+                    case 55:
+                        displayNumber('7');
+                        break;
+                    case 56:
+                        displayNumber('8');
+                        break;
+                    case 57:
+                        displayNumber('9');
+                        break;
+                }
+
+            } else {
+                switch (e.key) {
+                    case '+':
+                        operation('+');
+                        break;
+                    case '-':
+                        operation('-');
+                        break;
+                    case '*':
+                        operation('*');
+                        break;
+                    case '/':
+                        operation('/');
+                        break;
+                }
+                switch (e.which) {
+                    case 13:
+                        total();
+                        break;
+                    case 8: /// not working well!
+                        clear();
+                        break;
+                    case 46:
+                        clearAll();
+                        break;
+                    case 190:
+                        dot();
+                        break;
+                }
+            }
+        });
+
+        // Settings
+
+        var settings = document.getElementById('settings');
+        var settingOptions = document.querySelectorAll('.setting');
+        var cog = document.getElementById('cog');
+
+        window.addEventListener('load', function () {
+            document.getElementById('settings-check').checked = false;
+        });
+
+        document.getElementById('settings-check').addEventListener('change', function (e) {
+            if (e.target.checked) {
+                settings.className = 'settings open';
+                cog.className = 'cog-selected';
+                for (var x = 0; x < settingOptions.length; x++) {
+                    settingOptions[x].className = 'setting on';
+                }
+            } else {
+                settings.className = 'settings';
+                cog.className = 'cog';
+                for (var x = 0; x < settingOptions.length; x++) {
+                    settingOptions[x].className = 'setting';
+                }
+            }
+        });
+
+    </script>
+</body>
+
+</html>
