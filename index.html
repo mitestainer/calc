@@ -28,7 +28,8 @@
 
     .device {
         display: grid;
-        grid-template-rows: 3fr 5fr;
+        grid-template-rows: minmax(0, 3fr) 5fr;
+        grid-template-columns: minmax(0, 1fr);
         height: 600px;
         width: 350px;
         padding: 0.1em;
@@ -97,7 +98,9 @@
 
     #preview {
         font-size: 1.25em;
-        height: 2em;
+        height: 4em;
+        overflow: auto;
+        text-align: right;
     }
     #preview i {
         font-size: 0.5em;
@@ -109,6 +112,8 @@
     #result {
         font-size: 2.5em;
         height: 2em;
+        max-width: 100%;
+        overflow-y: hidden;
     }
 
     #keypad {
@@ -266,6 +271,18 @@
             height: 100vh;
         }
     }
+    @media (max-height: 450px) and (orientation: landscape) {
+        .device {
+            width: 100vw;
+            height: 100vh;
+            grid-template-rows: 1fr;
+            grid-template-columns: minmax(0, 4fr) 5fr;
+        }
+        #preview {
+            height: 8em;
+            overflow: auto;
+        }
+    }
 </style>
 
 <body>
@@ -391,6 +408,7 @@
         }
 
         function operation(symbol) {
+            // debugger;
             if (currentValue === undefined && previewValue !== undefined) { // if I wanna change the sign in a sudden
                 var splitted = previewValue.split('');
                 splitted.reverse();
@@ -448,7 +466,21 @@
         }
 
         function total() {
-            if (currentValue === undefined) {
+            debugger;
+            if (currentValue === undefined && previewValue !== undefined) {
+                previewValue = previewValue.split('');
+                previewValue.reverse();
+                previewValue.splice(0, 3);
+                previewValue.reverse();
+                previewValue = previewValue.join('');
+                var total = previewValue;
+                previewDisplay.textContent = total;
+                previewFixer(total);
+                var finalTotal = eval(total);
+                resultDisplay.textContent = finalTotal;
+                currentValue = resultDisplay.textContent;
+                previewValue = undefined;
+            } else if (currentValue === undefined && previewValue === undefined) {
                 // do nothing
             } else {
                 var total = previewValue + currentValue;
