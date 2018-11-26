@@ -260,7 +260,7 @@
         grid-column: 1 / span 2;
     }
 
-    @media screen and (max-width: 400px) {
+    @media screen and (max-width: 450px) {
         .device {
             width: 100vw;
             height: 100vh;
@@ -289,7 +289,7 @@
     <script>
         // Event fixer
         var eventHandler;
-        if (document.documentElement.clientWidth < 400) {
+        if (document.documentElement.clientWidth < 450) {
             eventHandler = 'touchstart';
         } else {
             eventHandler = 'click';
