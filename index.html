@@ -260,13 +260,9 @@
         grid-column: 1 / span 2;
     }
 
-    @media screen and (max-width: 350px) {
+    @media screen and (max-width: 400px) {
         .device {
             width: 100vw;
-        }
-    }
-    @media screen and (max-height: 600px) {
-        .device {
             height: 100vh;
         }
     }
@@ -291,6 +287,15 @@
         <div id="keypad"></div>
     </div>
     <script>
+        // Event fixer
+        var eventHandler;
+        if (document.documentElement.clientWidth < 400) {
+            eventHandler = 'touchstart';
+        } else {
+            eventHandler = 'click';
+        }
+        //
+
         var baseButtons = ['AC', 'C', 'back', '/', 7, 8, 9, '*', 4, 5, 6, '-', 1, 2, 3, '+', 0, '.', '='];
         var keypad = document.getElementById('keypad');
         var resultDisplay = document.getElementById('result');
@@ -492,7 +497,7 @@
         }
 
         // Buttons Logic
-        keypad.addEventListener('click', function (e) {
+        keypad.addEventListener(eventHandler, function (e) {
             if (e.target.className.includes('buttons number')) {
                 displayNumber(e.target.textContent);
             } else {
@@ -709,7 +714,7 @@
             document.getElementById('settings-check').checked = false;
         }
 
-        settings.addEventListener('click', function (e) {
+        settings.addEventListener(eventHandler, function (e) {
             switch (e.target.id) {
                 case 'default-setting':
                     changeColor();
