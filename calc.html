@@ -35,13 +35,14 @@
         border: 3px solid;
     }
 
-    #display {
+    .display {
         display: flex;
         justify-content: space-between;
         flex-direction: column;
         align-items: flex-end;
         background-color: #e8e8e8;
         padding: 0.5em 1em;
+        border-bottom: 1px solid #fff;
     }
 
     .settings {
@@ -82,13 +83,13 @@
         display: inline;
     }
     #default-setting {
-        background: linear-gradient(135deg, blue 0%, blue 50%, orange 50%, orange 100%);
+        background: linear-gradient(135deg, #006fff 0%, #006fff 50%, orange 50%, orange 100%);
     }
     #setting-1 {
-        background: linear-gradient(135deg, green 0%, green 50%, lightgreen 50%, lightgreen 100%);
+        background: linear-gradient(135deg, #049904 0%, #049904 50%, #63dd00 50%, #63dd00 100%);
     }
     #setting-2 {
-        background: linear-gradient(135deg, violet 0%, violet 50%, pink 50%, pink 100%);
+        background: linear-gradient(135deg, #e855e8 0%, #e855e8 50%, #fd9cfd 50%, #fd9cfd 100%);
     }
     #setting-3 {
         background: linear-gradient(135deg, black 0%, black 50%, gray 50%, gray 100%);
@@ -97,6 +98,13 @@
     #preview {
         font-size: 1.25em;
         height: 2em;
+    }
+    #preview i {
+        font-size: 0.5em;
+    }
+    #preview i::before {
+        line-height: 0.5;
+        vertical-align: top;
     }
     #result {
         font-size: 2.5em;
@@ -124,12 +132,117 @@
     .buttons i {
         pointer-events: none;
     }
+    /* Colors begin */
+    /* Default colors */
     .special1 {
         background-color: orange;
     }
-    .special2 {
-        background-color: blue;
+    .special1:hover {
+        background-color: #e69400;
     }
+    .special2 {
+        background-color: #006fff;
+    }
+    .special2:hover {
+        background-color: #0059cc;
+    }
+    /* Option 1 */
+    .option-1 {
+        background-color: #c9f6b2;
+        color: #086408;
+    }
+    .special1-1 {
+        background-color: #049904;
+        color: #63dd00;
+    }
+    .special1-1:hover {
+        background-color: #09af09;
+    }
+    .special2-1 {
+        background-color: #1aff1a;
+        color: #064d06;
+    }
+    .special2-1:hover {
+        background-color: #00db00;
+    }
+    .operator-1 {
+        background-color: #b1ff76;
+        color: #086408;
+    }
+    .operator-1:hover {
+        background-color: #98ec6b;
+    }
+    .number-1 {
+        background-color: #def7cb;
+        color: #086408;
+    }
+    .number-1:hover {
+        background-color: #a0db73;
+    }
+    /* Option 2 */
+    .option-2 {
+        background-color: #ffedff;
+        color: #f28bf5;
+    }
+    .special1-2 {
+        background-color: violet;
+        color: #ffd2f4;
+    }
+    .special1-2:hover {
+        background-color: #e855e8;
+    }
+    .special2-2 {
+        background-color: #fd9cfd;
+        color: #e53fe5;
+    }
+    .special2-2:hover {
+        background-color: #fc79fc;
+    }
+    .operator-2 {
+        background-color: #ffc3fd;
+        color: #e436e4;
+    }
+    .operator-2:hover {
+        background-color: #ffa9fc;
+    }
+    .number-2 {
+        background-color: #fde7fa;
+        color: #e666e6;
+    }
+    .number-2:hover {
+        background-color: #fbd4f6;
+    }
+    /* Option 3 */
+    .option-3 {
+        background-color: black;
+        color: #fff;
+    }
+    .special1-3 {
+        background-color: #1c1c1c;
+        color: #fff;
+    }
+    .special1-3:hover {
+        background-color: #141414;
+    } 
+    .special2-3 {
+        background-color: #808080;
+    }
+    .special2-3:hover {
+        background-color: #646464;
+    }
+    .operator-3 {
+        background-color: #b2b2b2;
+    }
+    .operator-3:hover {
+        background-color: #a0a0a0;
+    }
+    .number-3 {
+        background-color: #d3d3d3;
+    }
+    .number-3:hover {
+        background-color: #c1c1c1;
+    }
+    /* Colors end */
     .operator {
         background-color: #c8c8c8;
     }
@@ -143,19 +256,25 @@
         background-color: #b8b8b8;
     }
 
-    #b-15 {
-        grid-row: 4 / span 2;
-        grid-column: 4;
-    }
-
     #b-16 {
         grid-column: 1 / span 2;
+    }
+
+    @media screen and (max-width: 350px) {
+        .device {
+            width: 100vw;
+        }
+    }
+    @media screen and (max-height: 600px) {
+        .device {
+            height: 100vh;
+        }
     }
 </style>
 
 <body>
     <div class="device">
-        <div id="display">
+        <div id="display" class="display">
             <div id="settings" class="settings">
                 <div id="default-setting" class="setting"></div>
                 <div id="setting-1" class="setting"></div>
@@ -172,7 +291,7 @@
         <div id="keypad"></div>
     </div>
     <script>
-        var baseButtons = ['AC', 'C', '/', '*', 7, 8, 9, '-', 4, 5, 6, '+', 1, 2, 3, '=', 0, '.'];
+        var baseButtons = ['AC', 'C', 'back', '/', 7, 8, 9, '*', 4, 5, 6, '-', 1, 2, 3, '+', 0, '.', '='];
         var keypad = document.getElementById('keypad');
         var resultDisplay = document.getElementById('result');
         var previewDisplay = document.getElementById('preview');
@@ -186,22 +305,19 @@
             button.innerHTML = baseButtons[x];
             keypad.appendChild(button);
         }
+
         var buttons = document.querySelectorAll('.buttons');
+
         for (var x = 0; x < buttons.length; x++) {
-            // if (buttons[x].innerHTML === 'AC') {
-            //     buttons[x].className = 'buttons special1';
-            // } else if (buttons[x].innerHTML === 'C' || buttons[x].innerHTML === '<i class="fas fa-equals"></i>') {
-            //     buttons[x].className = 'buttons special2';
-            // } else if (buttons[x].innerHTML === '/' || buttons[x].innerHTML === '*' || buttons[x].innerHTML === '-' || buttons[x].innerHTML === '+') {
-            //     buttons[x].className = 'buttons operator';
-            // } else {
-            //     buttons[x].className = 'buttons number';
-            // }
             switch (buttons[x].innerHTML) {
                 case 'AC':
                     buttons[x].className = 'buttons special1';
                     break;
                 case 'C':
+                    buttons[x].className = 'buttons special2';
+                    break;
+                case 'back':
+                    buttons[x].innerHTML = '<i class="fas fa-backspace"></i>';
                     buttons[x].className = 'buttons special2';
                     break;
                 case '=':
@@ -237,61 +353,88 @@
             if (resultDisplay.textContent === '') {
                 resultDisplay.textContent = input;
                 currentValue = resultDisplay.textContent;
-                // console.log(currentValue);
             } else {
                 currentValue = currentValue + input;
                 resultDisplay.textContent = currentValue;
-                // console.log(currentValue);
             }
         }
 
         var previewValue;
 
-        function operation(symbol) {
-            if (currentValue === '') {
-                var splitted = previewValue.split('');
-                var reversed = splitted.reverse();
-                reversed[1] = symbol;
-                splitted = reversed.reverse();
-                var joined = splitted.join('');
-                previewDisplay.textContent = joined;
-                previewValue = previewDisplay.textContent;
-            } else {
-            if (previewDisplay.textContent === '') {
-                previewDisplay.textContent = currentValue + ' ' + symbol + ' ';
-                previewValue = previewDisplay.textContent;
-                currentValue = '';
-                resultDisplay.textContent = '';
-            } else {
-                if (previewValue === '') {
-                    previewValue = resultDisplay.textContent + ' ' + symbol + ' ';
-                } else {
-                    previewValue = previewValue + currentValue + ' ' + symbol + ' ';
+        function previewFixer(input) {
+            var inputString = input;
+            var splitted = inputString.split('');
+            // var re = /(\+|-|\*|\/)/g
+            for (var x = 0; x < splitted.length; x++) {
+                switch (splitted[x]) {
+                    case '+':
+                        splitted[x] = '<i class="fas fa-plus"></i>';
+                        break;
+                    case '-':
+                        splitted[x] = '<i class="fas fa-minus"></i>';
+                        break;
+                    case '*':
+                        splitted[x] = '<i class="fas fa-times"></i>';
+                        break;
+                    case '/':
+                        splitted[x] = '<i class="fas fa-divide"></i>';
+                        break;
                 }
-                previewDisplay.textContent = previewValue;
-                currentValue = '';
-                resultDisplay.textContent = '';
             }
-            }
+            splitted = splitted.join('');
+            previewDisplay.innerHTML = splitted;
         }
 
-        function total() {
-            var total = previewValue + currentValue;
-            previewDisplay.textContent = total;
-            var finalTotal = eval(total);
-            resultDisplay.textContent = finalTotal;
-            previewValue = '';
+        function operation(symbol) {
+            if (currentValue === undefined && previewValue !== undefined) { // if I wanna change the sign in a sudden
+                var splitted = previewValue.split('');
+                splitted.reverse();
+                splitted[1] = symbol;
+                splitted.reverse();
+                splitted = splitted.join('');
+                previewFixer(splitted);
+                previewValue = splitted;
+            } else if (previewValue === undefined && currentValue === undefined) {
+                previewValue = undefined;
+            } else {
+                if (previewDisplay.textContent === '') {
+                    previewDisplay.textContent = currentValue + ' ' + symbol + ' ';
+                    previewValue = previewDisplay.textContent;
+                    previewFixer(previewValue);
+                    currentValue = undefined;
+                    resultDisplay.textContent = '';
+                } else {
+                    if (previewValue === undefined) {
+                        previewValue = resultDisplay.textContent + ' ' + symbol + ' ';
+                    } else {
+                        previewValue = previewValue + currentValue + ' ' + symbol + ' ';
+                    }
+                    previewDisplay.textContent = previewValue;
+                    previewFixer(previewValue);
+                    currentValue = undefined;
+                    resultDisplay.textContent = '';
+                }
+            }
         }
 
         function clear() {
             resultDisplay.textContent = '';
+            currentValue = undefined;
         }
 
         function clearAll() {
-            previewValue = '';
-            currentValue = '';
+            previewValue = undefined;
+            currentValue = undefined;
             resultDisplay.textContent = '';
             previewDisplay.textContent = '';
+        }
+
+        function backspace() {
+            var toBeCleared = currentValue.split('');
+            toBeCleared.pop();
+            var newValue = toBeCleared.join('');
+            resultDisplay.textContent = newValue;
+            currentValue = resultDisplay.textContent;
         }
 
         function dot() {
@@ -299,6 +442,18 @@
             resultDisplay.textContent = currentValue;
         }
 
+        function total() {
+            if (currentValue === undefined) {
+                // do nothing
+            } else {
+                var total = previewValue + currentValue;
+                previewDisplay.textContent = total;
+                previewFixer(total);
+                var finalTotal = eval(total);
+                resultDisplay.textContent = finalTotal;
+                previewValue = undefined;
+            }
+        }
 
         function symbols(input) {
             switch (input) {
@@ -330,14 +485,15 @@
                 case '.':
                     dot();
                     break;
+                case 'back':
+                    backspace();
+                    break;
             }
         }
 
         // Buttons Logic
         keypad.addEventListener('click', function (e) {
-            // console.log(e.target.id);
-            // for (var x = 0; x < buttons.length; x++) {
-            if (e.target.className === 'buttons number') {
+            if (e.target.className.includes('buttons number')) {
                 displayNumber(e.target.textContent);
             } else {
                 switch (e.target.innerHTML) {
@@ -365,13 +521,11 @@
                     case '.':
                         symbols('.');
                         break;
+                    case '<i class="fas fa-backspace"></i>':
+                        symbols('back');
+                        break;
                 }
-                // console.log('anythung else');
-                // console.log(baseButtons[x]);
-                // symbols(baseButtons[x]);
             }
-
-            // }
         });
 
         // Physical keyboard
@@ -447,10 +601,19 @@
         var settings = document.getElementById('settings');
         var settingOptions = document.querySelectorAll('.setting');
         var cog = document.getElementById('cog');
+        var display = document.getElementById('display');
 
         window.addEventListener('load', function () {
             document.getElementById('settings-check').checked = false;
         });
+
+        function closeSettings() {
+            settings.className = 'settings';
+            cog.className = 'cog';
+            for (var x = 0; x < settingOptions.length; x++) {
+                settingOptions[x].className = 'setting';
+            }
+        }
 
         document.getElementById('settings-check').addEventListener('change', function (e) {
             if (e.target.checked) {
@@ -460,11 +623,106 @@
                     settingOptions[x].className = 'setting on';
                 }
             } else {
-                settings.className = 'settings';
-                cog.className = 'cog';
-                for (var x = 0; x < settingOptions.length; x++) {
-                    settingOptions[x].className = 'setting';
+                closeSettings();
+            }
+        });
+
+        function changeColor(color) {
+            switch (color) {
+                case 'green':
+                    display.className = 'display option-1';
+                    break;
+                case 'pink':
+                    display.className = 'display option-2';
+                    break;
+                case 'black':
+                    display.className = 'display option-3';
+                    break;
+                default:
+                    display.className = 'display';
+                    break;
+            }
+            for (var x = 0; x < buttons.length; x++) {
+                if (buttons[x].innerHTML === 'AC') {
+                    switch (color) {
+                        case 'green':
+                            buttons[x].className = 'buttons special1-1';
+                            break;
+                        case 'pink':
+                            buttons[x].className = 'buttons special1-2';
+                            break;
+                        case 'black':
+                            buttons[x].className = 'buttons special1-3';
+                            break;
+                        default:
+                            buttons[x].className = 'buttons special1';
+                            break;
+                    }
+                } else if (buttons[x].innerHTML === 'C' || buttons[x].innerHTML === '<i class=\"fas fa-backspace\"></i>' || buttons[x].innerHTML === '<i class=\"fas fa-equals\"></i>') {
+                    switch (color) {
+                        case 'green':
+                            buttons[x].className = 'buttons special2-1';
+                            break;
+                        case 'pink':
+                            buttons[x].className = 'buttons special2-2';
+                            break;
+                        case 'black':
+                            buttons[x].className = 'buttons special2-3';
+                            break;
+                        default:
+                            buttons[x].className = 'buttons special2';
+                            break;
+                    }
+                } else if (buttons[x].innerHTML === '<i class=\"fas fa-plus\"></i>' || buttons[x].innerHTML === '<i class=\"fas fa-minus\"></i>' || buttons[x].innerHTML === '<i class=\"fas fa-times\"></i>' || buttons[x].innerHTML === '<i class=\"fas fa-divide\"></i>') {
+                    switch (color) {
+                        case 'green':
+                            buttons[x].className = 'buttons operator-1';
+                            break;
+                        case 'pink':
+                            buttons[x].className = 'buttons operator-2';
+                            break;
+                        case 'black':
+                            buttons[x].className = 'buttons operator-3';
+                            break;
+                        default:
+                            buttons[x].className = 'buttons operator';
+                            break;
+                    }
+                } else {
+                    switch (color) {
+                        case 'green':
+                            buttons[x].className = 'buttons number-1';
+                            break;
+                        case 'pink':
+                            buttons[x].className = 'buttons number-2';
+                            break;
+                        case 'black':
+                            buttons[x].className = 'buttons number-3';
+                            break;
+                        default:
+                            buttons[x].className = 'buttons number';
+                            break;
+                    }
                 }
+            }
+            closeSettings();
+            document.getElementById('settings-check').checked = false;
+        }
+
+        settings.addEventListener('click', function (e) {
+            switch (e.target.id) {
+                case 'default-setting':
+                    changeColor();
+                    break;
+                case 'setting-1':
+                    changeColor('green');
+                    break;
+                case 'setting-2':
+                    changeColor('pink');
+                    break;
+                case 'setting-3':
+                    changeColor('black');
+                    break;
             }
         });
 
